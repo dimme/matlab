@@ -4,15 +4,14 @@ function [ mu, sigma ] = fitTruncNormDist( truncData, truncPoint, side )
 %   distribution.
 
     if strcmp(side,'right')
-        truncNormPdf = @(x,mu,sigma) normpdf(x,mu,sigma) ./ ...
-            normcdf(truncPoint,mu,sigma);
+        truncNormPdf = @(x,mu,sigma) normpdf(x,mu,sigma) ./ normcdf(truncPoint,mu,sigma);
         start = [mean(truncData),std(truncData)];
-        paramEsts = mle(truncData,'pdf',truncNormPdf,'start',start,...
-            'lower',[-Inf 0]);
+        paramEsts = mle(truncData,'pdf',truncNormPdf,'start',start,'lower',[-Inf 0]);
         mu = paramEsts(1);
         sigma = paramEsts(2);
     elseif strcmp(side,'left')
         [mu,sigma] = fitTruncNormDist(-truncData,-truncPoint,'right');
+        mu = -mu;
     else
         mu = 0;
         sigma = 0;
